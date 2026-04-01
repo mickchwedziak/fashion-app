@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Fashion App · Photo Collecting</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e0e;
+    --paper: #f5f2ed;
+    --accent: #b8860b;
+    --accent-light: #d4a82a;
+    --muted: #8a8278;
+    --border: #d4cfc8;
+    --error: #9b3a3a;
+    --success: #2d6a4f;
+    --card: #fffefb;
+    --shadow: 0 2px 20px rgba(14,14,14,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    height: 100%;
+    background: var(--paper);
+    font-family: 'DM Mono', monospace;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  body {
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(184,134,11,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(184,134,11,0.04) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--ink);
+    padding: 18px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .header-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--paper);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .header-auth {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+  }
+  .auth-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.4s;
+  }
+  .auth-dot.connected { background: #4caf82; box-shadow: 0 0 6px rgba(76,175,130,0.5); }
+  .auth-label {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN ── */
+  main {
+    padding: 28px 20px 60px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; animation: fadeUp 0.35s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HOME SCREEN ── */
+  .home-intro {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .auth-banner {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .auth-banner-icon { font-size: 22px; }
+  .auth-banner-text { flex: 1; }
+  .auth-banner-text strong {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .auth-banner-text span {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 18px 24px;
+    border: none;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    -webkit-appearance: none;
+  }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary:hover { background: #1a1a1a; }
+  .btn-primary:disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-accent:hover { background: var(--accent-light); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+
+  .btn + .btn { margin-top: 12px; }
+
+  /* ── CAMERA SCREEN ── */
+  .photo-preview-wrap {
+    position: relative;
+    background: var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    aspect-ratio: 3/4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .photo-preview-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-placeholder {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px;
+  }
+  .photo-placeholder .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+  .photo-placeholder p { font-size: 10px; letter-spacing: 0.1em; }
+
+  .photo-delete-btn {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(14,14,14,0.75);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    display: none;
+  }
+  .photo-delete-btn.visible { display: block; }
+
+  /* hidden file input */
+  #cameraInput { display: none; }
+
+  /* ── FORM ── */
+  .form-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 18px;
+    margin-bottom: 16px;
+  }
+  .form-section-title {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  label .field-id {
+    color: var(--accent);
+    font-size: 8px;
+  }
+
+  select, input[type="text"] {
+    width: 100%;
+    padding: 13px 14px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  select:focus, input[type="text"]:focus {
+    border-color: var(--accent);
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8278' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* ── FILENAME PREVIEW ── */
+  .filename-preview {
+    background: var(--ink);
+    border-radius: 3px;
+    padding: 12px 14px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  .filename-preview-label {
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .filename-preview-value {
+    font-size: 11px;
+    color: var(--paper);
+    word-break: break-all;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  .filename-preview-value.incomplete {
+    opacity: 0.35;
+    font-style: italic;
+  }
+
+  /* ── SAVE STATUS ── */
+  .save-status {
+    text-align: center;
+    padding: 16px;
+  }
+  .save-status .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .save-status p {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  /* ── SUCCESS SCREEN ── */
+  .success-icon {
+    font-size: 52px;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--success);
+  }
+  .success-subtitle {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .success-file-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 28px;
+  }
+  .success-file-label {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .success-file-name {
+    font-size: 12px;
+    color: var(--ink);
+    word-break: break-all;
+    line-height: 1.6;
+  }
+  .success-file-location {
+    font-size: 9px;
+    color: var(--accent);
+    margin-top: 6px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── ERROR BANNER ── */
+  .error-banner {
+    background: #fdf0f0;
+    border: 1px solid #e8c4c4;
+    border-radius: 3px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 11px;
+    color: var(--error);
+    line-height: 1.5;
+    display: none;
+  }
+  .error-banner.visible { display: block; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* ── UTILS ── */
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+
+  /* ── SCREEN: NEEDS AUTH ── */
+  .needs-auth-msg {
+    background: #fffbf0;
+    border: 1px solid #e8d8a0;
+    border-radius: 4px;
+    padding: 20px 18px;
+    margin-bottom: 24px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #6b5c1a;
+  }
+  .needs-auth-msg strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 17px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-sub">Photo Collecting</div>
+  <div class="header-title">Fashion App</div>
+  <div class="header-auth">
+    <div class="auth-dot" id="authDot"></div>
+    <div class="auth-label" id="authLabel">Drive</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ══════════════════════════════
+       SCREEN 1: HOME
+  ══════════════════════════════ -->
+  <div class="screen active" id="screenHome">
+    <div class="home-intro">Ready to catalogue your wardrobe</div>
+
+    <div class="auth-banner" id="authBanner">
+      <div class="auth-banner-icon" id="authBannerIcon">🔗</div>
+      <div class="auth-banner-text">
+        <strong id="authBannerTitle">Connect Google Drive</strong>
+        <span id="authBannerSub">Tap to sign in before capturing</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btnConnectDrive" onclick="signIn()">Connect Google Drive</button>
+
+    <button class="btn btn-accent" id="btnTakePhoto" onclick="goToCamera()" disabled style="margin-top:16px;">
+      Take Photo
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 2: CAMERA / PHOTO REVIEW
+  ══════════════════════════════ -->
+  <div class="screen" id="screenCamera">
+
+    <div class="photo-preview-wrap" id="photoPreviewWrap">
+      <div class="photo-placeholder" id="photoPlaceholder">
+        <div class="icon">📷</div>
+        <p>No photo yet</p>
+      </div>
+      <img id="photoPreview" src="" alt="Preview" style="display:none;">
+      <button class="photo-delete-btn" id="btnDeletePhoto" onclick="deletePhoto()">✕ Delete</button>
+    </div>
+
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handlePhoto(event)">
+
+    <button class="btn btn-primary" id="btnOpenCamera" onclick="openCamera()">Open Camera</button>
+    <button class="btn btn-outline mt-8" onclick="goHome()">← Back</button>
+
+    <!-- FORM — shown after photo taken -->
+    <div id="formSection" style="display:none;">
+      <div class="divider"></div>
+
+      <div class="form-section">
+        <div class="form-section-title">Item Details</div>
+
+        <div class="field">
+          <label>Category <span class="field-id" id="catIdDisplay"></span></label>
+          <select id="fieldCategory" onchange="onCategoryChange()">
+            <option value="">— Select category —</option>
+            <option value="JEWEL">JEWELLERY</option>
+            <option value="SHOES">SHOES</option>
+            <option value="CLOTH">CLOTHES</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Subcategory <span class="field-id" id="subcatIdDisplay"></span></label>
+          <select id="fieldSubcategory" onchange="updateFilenamePreview()" disabled>
+            <option value="">— Select subcategory —</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Name / Brand</label>
+          <input type="text" id="fieldName" placeholder="e.g. Nike Air Max" oninput="updateFilenamePreview()">
+        </div>
+
+        <div class="field">
+          <label>Colour</label>
+          <input type="text" id="fieldColour" placeholder="e.g. Navy Blue" oninput="updateFilenamePreview()">
+        </div>
+      </div>
+
+      <div class="filename-preview" id="filenamePreview">
+        <div class="filename-preview-label">Filename preview</div>
+        <div class="filename-preview-value incomplete" id="filenamePreviewValue">Fill all fields to see filename</div>
+      </div>
+
+      <div class="error-banner" id="errorBanner"></div>
+
+      <div id="saveStatusWrap" style="display:none;">
+        <div class="save-status">
+          <div class="spinner"></div>
+          <p>Uploading to Google Drive…</p>
+        </div>
+      </div>
+
+      <button class="btn btn-accent" id="btnSave" onclick="savePhoto()" disabled>Save to Drive</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 3: SUCCESS
+  ══════════════════════════════ -->
+  <div class="screen" id="screenSuccess">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Saved!</div>
+    <div class="success-subtitle">Photo added to your collection</div>
+
+    <div class="success-file-card">
+      <div class="success-file-label">Saved as</div>
+      <div class="success-file-name" id="successFileName">—</div>
+      <div class="success-file-location">📁 PHOTOS/ on Google Drive</div>
+    </div>
+
+    <button class="btn btn-primary" onclick="goHome()">⌂ Home</button>
+  </div>
+
+</main>
+
+<!-- Google API -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+// ══════════════════════════════════════════════════
+//  CONFIG — FILL THESE IN AFTER GOOGLE CLOUD SETUP
+// ══════════════════════════════════════════════════
+const CONFIG = {
+  CLIENT_ID:   '539150863996-omo5ogmsvelrmdgeo3k94shengv54rjj.apps.googleusercontent.com',
+  API_KEY:     'AIzaSyAijdPxU9azdGfHYVp0cxuj_h5njb4Q4DQ',
+  FOLDER_NAME: 'PHOTOS',
+  SCOPES:      'https://www.googleapis.com/auth/drive.file'
+};
+
+// ══════════════════════════════════════════════════
+//  SUBCATEGORY MAP
+// ══════════════════════════════════════════════════
+const SUBCATEGORIES = {
+  JEWEL: [
+    { label: 'Watches',  value: 'WAT' },
+    { label: 'Other',    value: 'OTH' }
+  ],
+  SHOES: [
+    { label: 'Trainers', value: 'TRN' },
+    { label: 'Boots',    value: 'BTS' },
+    { label: 'Other',    value: 'OTH' }
+  ],
+  CLOTH: [
+    { label: 'Short-sleeve tops',    value: 'SST' },
+    { label: 'Long-sleeve tops',     value: 'LST' },
+    { label: 'Buttoned Shirts',      value: 'BSH' },
+    { label: 'Hoodies and Sweaters', value: 'HNS' },
+    { label: 'Trousers',             value: 'TRS' },
+    { label: 'Belts',                value: 'BLT' },
+    { label: 'Shorts',               value: 'SHR' }
+  ]
+};
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let state = {
+  tokenClient: null,
+  accessToken: null,
+  photoBlob: null,
+  photoMime: 'image/jpeg',
+  folderId: null,
+};
+
+// ══════════════════════════════════════════════════
+//  GOOGLE SIGN-IN
+// ══════════════════════════════════════════════════
+function initGoogleAuth() {
+  if (!window.google) { setTimeout(initGoogleAuth, 500); return; }
+  state.tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.CLIENT_ID,
+    scope: CONFIG.SCOPES,
+    callback: (resp) => {
+      if (resp.error) { showError('Google auth failed: ' + resp.error); return; }
+      state.accessToken = resp.access_token;
+      onSignedIn();
+    }
+  });
+}
+
+function signIn() {
+  if (!state.tokenClient) { showError('Google API not loaded yet. Try again in a moment.'); return; }
+  state.tokenClient.requestAccessToken({ prompt: '' });
+}
+
+function onSignedIn() {
+  // Update UI
+  document.getElementById('authDot').classList.add('connected');
+  document.getElementById('authLabel').textContent = 'Connected';
+  document.getElementById('authBannerIcon').textContent = '✅';
+  document.getElementById('authBannerTitle').textContent = 'Drive Connected';
+  document.getElementById('authBannerSub').textContent = 'Ready to save photos';
+  document.getElementById('btnConnectDrive').textContent = 'Reconnect Drive';
+  document.getElementById('btnConnectDrive').classList.remove('btn-primary');
+  document.getElementById('btnConnectDrive').classList.add('btn-outline');
+  document.getElementById('btnTakePhoto').disabled = false;
+}
+
+// ══════════════════════════════════════════════════
+//  SCREEN NAVIGATION
+// ══════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+  resetForm();
+  showScreen('screenHome');
+}
+
+function goToCamera() {
+  if (!state.accessToken) { signIn(); return; }
+  showScreen('screenCamera');
+}
+
+// ══════════════════════════════════════════════════
+//  CAMERA
+// ══════════════════════════════════════════════════
+function openCamera() {
+  document.getElementById('cameraInput').click();
+}
+
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  state.photoBlob = file;
+  state.photoMime = file.type || 'image/jpeg';
+
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById('photoPreview');
+  img.src = url;
+  img.style.display = 'block';
+  document.getElementById('photoPlaceholder').style.display = 'none';
+  document.getElementById('btnDeletePhoto').classList.add('visible');
+  document.getElementById('btnOpenCamera').textContent = 'Retake Photo';
+  document.getElementById('formSection').style.display = 'block';
+  updateFilenamePreview();
+}
+
+function deletePhoto() {
+  state.photoBlob = null;
+  const img = document.getElementById('photoPreview');
+  img.src = '';
+  img.style.display = 'none';
+  document.getElementById('photoPlaceholder').style.display = 'block';
+  document.getElementById('btnDeletePhoto').classList.remove('visible');
+  document.getElementById('btnOpenCamera').textContent = 'Open Camera';
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('cameraInput').value = '';
+  resetForm();
+}
+
+// ══════════════════════════════════════════════════
+//  FORM LOGIC
+// ══════════════════════════════════════════════════
+function onCategoryChange() {
+  const cat = document.getElementById('fieldCategory').value;
+  const subcatSel = document.getElementById('fieldSubcategory');
+  subcatSel.innerHTML = '<option value="">— Select subcategory —</option>';
+  document.getElementById('catIdDisplay').textContent = cat ? `(${cat})` : '';
+  document.getElementById('subcatIdDisplay').textContent = '';
+
+  if (cat && SUBCATEGORIES[cat]) {
+    SUBCATEGORIES[cat].forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item.value;
+      opt.textContent = item.label;
+      subcatSel.appendChild(opt);
+    });
+    subcatSel.disabled = false;
+  } else {
+    subcatSel.disabled = true;
+  }
+  updateFilenamePreview();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('fieldSubcategory').addEventListener('change', () => {
+    const val = document.getElementById('fieldSubcategory').value;
+    document.getElementById('subcatIdDisplay').textContent = val ? `(${val})` : '';
+    updateFilenamePreview();
+  });
+});
+
+function getToday() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+function sanitize(str) {
+  return str.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-]/g, '');
+}
+
+function buildFilename(ext) {
+  const cat    = document.getElementById('fieldCategory').value;
+  const subcat = document.getElementById('fieldSubcategory').value;
+  const name   = document.getElementById('fieldName').value.trim();
+  const colour = document.getElementById('fieldColour').value.trim();
+  if (!cat || !subcat || !name || !colour) return null;
+  return `${cat}_${subcat}_${sanitize(name)}_${sanitize(colour)}_${getToday()}${ext}`;
+}
+
+function updateFilenamePreview() {
+  const filename = buildFilename('.jpg');
+  const el = document.getElementById('filenamePreviewValue');
+  if (filename) {
+    el.textContent = filename;
+    el.classList.remove('incomplete');
+  } else {
+    el.textContent = 'Fill all fields to see filename';
+    el.classList.add('incomplete');
+  }
+  // enable/disable save
+  const canSave = filename && state.photoBlob;
+  document.getElementById('btnSave').disabled = !canSave;
+}
+
+function resetForm() {
+  document.getElementById('fieldCategory').value = '';
+  document.getElementById('fieldSubcategory').innerHTML = '<option value="">— Select subcategory —</option>';
+  document.getElementById('fieldSubcategory').disabled = true;
+  document.getElementById('fieldName').value = '';
+  document.getElementById('fieldColour').value = '';
+  document.getElementById('catIdDisplay').textContent = '';
+  document.getElementById('subcatIdDisplay').textContent = '';
+  document.getElementById('filenamePreviewValue').textContent = 'Fill all fields to see filename';
+  document.getElementById('filenamePreviewValue').classList.add('incomplete');
+  document.getElementById('btnSave').disabled = true;
+  document.getElementById('errorBanner').classList.remove('visible');
+  document.getElementById('saveStatusWrap').style.display = 'none';
+  document.getElementById('btnSave').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════
+//  GOOGLE DRIVE — find or create PHOTOS folder
+// ══════════════════════════════════════════════════
+async function ensurePhotosFolder() {
+  if (state.folderId) return state.folderId;
+
+  // Search for existing PHOTOS folder
+  const searchRes = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=name%3D'${CONFIG.FOLDER_NAME}'+and+mimeType%3D'application%2Fvnd.google-apps.folder'+and+trashed%3Dfalse&fields=files(id,name)`,
+    { headers: { Authorization: `Bearer ${state.accessToken}` } }
+  );
+  const searchData = await searchRes.json();
+
+  if (searchData.files && searchData.files.length > 0) {
+    state.folderId = searchData.files[0].id;
+    return state.folderId;
+  }
+
+  // Create it
+  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${state.accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: CONFIG.FOLDER_NAME,
+      mimeType: 'application/vnd.google-apps.folder'
+    })
+  });
+  const createData = await createRes.json();
+  state.folderId = createData.id;
+  return state.folderId;
+}
+
+// ══════════════════════════════════════════════════
+//  DUPLICATE CHECK + suffix logic
+// ══════════════════════════════════════════════════
+async function resolveFilename(baseName, folderId) {
+  // baseName e.g. "CLOTH_SST_Nike-Air-Max_White_2025-01-15.jpg"
+  const nameNoExt = baseName.replace(/\.[^.]+$/, '');
+  const ext = baseName.match(/\.[^.]+$/)[0];
+
+  const q = encodeURIComponent(`'${folderId}' in parents and trashed=false and name contains '${nameNoExt}'`);
+  const res = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(name)`,
+    { headers: { Authorization: `Bearer ${state.accessToken}` } }
+  );
+  const data = await res.json();
+  const existing = (data.files || []).map(f => f.name);
+
+  if (!existing.includes(baseName)) return baseName;
+
+  // Find next suffix
+  let i = 1;
+  while (true) {
+    const candidate = `${nameNoExt}_${String(i).padStart(2,'0')}${ext}`;
+    if (!existing.includes(candidate)) return candidate;
+    i++;
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  SAVE TO DRIVE
+// ══════════════════════════════════════════════════
+async function savePhoto() {
+  const baseExt = state.photoMime === 'image/png' ? '.png' : '.jpg';
+  const baseFilename = buildFilename(baseExt);
+  if (!baseFilename || !state.photoBlob) return;
+
+  // Lock UI
+  document.getElementById('btnSave').style.display = 'none';
+  document.getElementById('saveStatusWrap').style.display = 'block';
+  document.getElementById('errorBanner').classList.remove('visible');
+
+  try {
+    const folderId = await ensurePhotosFolder();
+    const finalFilename = await resolveFilename(baseFilename, folderId);
+
+    // Multipart upload
+    const metadata = {
+      name: finalFilename,
+      mimeType: state.photoMime,
+      parents: [folderId]
+    };
+
+    const boundary = 'fashionapp_boundary_' + Date.now();
+    const metaPart =
+      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n` +
+      JSON.stringify(metadata) + '\r\n';
+    const filePart = `--${boundary}\r\nContent-Type: ${state.photoMime}\r\n\r\n`;
+    const closing  = `\r\n--${boundary}--`;
+
+    const metaBlob  = new Blob([metaPart], { type: 'text/plain' });
+    const fileBlob  = new Blob([filePart], { type: 'text/plain' });
+    const closeBlob = new Blob([closing],  { type: 'text/plain' });
+    const body      = new Blob([metaBlob, fileBlob, state.photoBlob, closeBlob]);
+
+    const uploadRes = await fetch(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${state.accessToken}`,
+          'Content-Type': `multipart/related; boundary=${boundary}`
+        },
+        body
+      }
+    );
+
+    if (!uploadRes.ok) {
+      const err = await uploadRes.json();
+      throw new Error(err.error?.message || 'Upload failed');
+    }
+
+    // SUCCESS
+    document.getElementById('successFileName').textContent = finalFilename;
+    showScreen('screenSuccess');
+
+  } catch (e) {
+    document.getElementById('saveStatusWrap').style.display = 'none';
+    document.getElementById('btnSave').style.display = 'block';
+    showError('Upload failed: ' + e.message + '. Check Drive connection and try again.');
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  ERROR HELPER
+// ══════════════════════════════════════════════════
+function showError(msg) {
+  const el = document.getElementById('errorBanner');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  // Load Google API script
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.onload = initGoogleAuth;
+  document.head.appendChild(script);
+});
+</script>
+</body>
+</html>
