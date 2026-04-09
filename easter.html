@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f0a08" />
+  <title>Konkurs Wielkanocny 2026 · Domowa Spiżarnia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300..900;1,300..900&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400..700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — mobile-first, Sol aesthetic
+       ============================================================ */
+    :root {
+      /* Surface */
+      --bg: #0f0a08;
+      --bg-2: #1a110c;
+      --glass: rgba(28, 18, 12, 0.62);
+      --glass-soft: rgba(38, 24, 16, 0.42);
+      --glass-hi: rgba(48, 30, 18, 0.78);
+      --glass-border: rgba(255, 176, 112, 0.16);
+      --glass-border-hi: rgba(255, 176, 112, 0.32);
+      --blur: 24px;
+
+      /* Text — verified contrast on #0f0a08 */
+      --ink: #f5ebe0;                              /* 14:1 */
+      --ink-soft: rgba(245, 235, 224, 0.82);       /* 11:1 */
+      --ink-mid: rgba(245, 235, 224, 0.64);        /*  9:1 — small body OK */
+      --ink-low: rgba(245, 235, 224, 0.44);        /*  6:1 — labels only, never prose */
+
+      /* Accent palette — warm only */
+      --gold: #ffb070;
+      --coral: #ff7a40;
+      --winner: #e85a20;
+      --winner-deep: #b83a10;
+
+      /* Type weights */
+      --w-regular: 420;
+      --w-medium: 520;
+      --w-bold: 620;
+
+      /* Spacing — strict 4pt grid */
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 20px;
+      --s-6: 24px;
+      --s-8: 32px;
+      --s-10: 40px;
+      --s-12: 48px;
+      --s-16: 64px;
+      --s-20: 80px;
+      --s-24: 96px;
+
+      /* Radii — 3 values only */
+      --r-sm: 10px;
+      --r: 16px;
+      --r-lg: 24px;
+
+      /* Mobile-default tokens */
+      --page-pad-x: var(--s-4);
+      --page-pad-y: var(--s-8);
+      --section-gap: var(--s-12);
+      --card-pad: var(--s-5);
+
+      /* Touch */
+      --touch-min: 44px;
+
+      /* Type scale — base mobile */
+      --t-xs: 12px;
+      --t-sm: 14px;
+      --t-base: 16px;
+      --t-lg: 18px;
+      --t-xl: 22px;
+      --t-2xl: 28px;
+      --t-3xl: 36px;
+      --t-4xl: 44px;
+    }
+
+    @media (min-width: 641px) {
+      :root {
+        --page-pad-x: var(--s-6);
+        --page-pad-y: var(--s-12);
+        --section-gap: var(--s-16);
+        --card-pad: var(--s-8);
+        --t-lg: 19px;
+        --t-xl: 24px;
+        --t-2xl: 32px;
+        --t-3xl: 44px;
+        --t-4xl: 56px;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      :root {
+        --page-pad-x: var(--s-10);
+        --page-pad-y: var(--s-16);
+        --section-gap: var(--s-20);
+        --card-pad: var(--s-10);
+        --t-lg: 20px;
+        --t-xl: 26px;
+        --t-2xl: 36px;
+        --t-3xl: 56px;
+        --t-4xl: 80px;
+      }
+    }
+
+    /* ============================================================
+       RESET
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+    }
+    body {
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: var(--t-base);
+      line-height: 1.55;
+      font-weight: var(--w-regular);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    img, video, svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible {
+      outline: 2px solid var(--coral);
+      outline-offset: 3px;
+      border-radius: var(--r-sm);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ============================================================
+       BACKDROP
+       ============================================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 60% at 18% 6%, rgba(255, 176, 112, 0.18), transparent 62%),
+        radial-gradient(ellipse 80% 55% at 88% 96%, rgba(232, 90, 32, 0.14), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      mix-blend-mode: overlay;
+      opacity: 0.55;
+    }
+
+    /* ============================================================
+       LAYOUT — mobile-first
+       ============================================================ */
+    .page {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: var(--page-pad-y) var(--page-pad-x) var(--s-20);
+      padding-left: max(var(--page-pad-x), env(safe-area-inset-left));
+      padding-right: max(var(--page-pad-x), env(safe-area-inset-right));
+    }
+
+    section {
+      margin-top: var(--section-gap);
+    }
+    section:first-of-type { margin-top: 0; }
+
+    /* ============================================================
+       PRIMITIVES
+       ============================================================ */
+    .display {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      letter-spacing: -0.022em;
+      line-height: 1.05;
+    }
+    .display em {
+      font-style: italic;
+      font-weight: var(--w-regular);
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--t-xs);
+      font-weight: var(--w-medium);
+      color: var(--coral);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-low);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .glass {
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(var(--blur));
+      backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-head {
+      margin-bottom: var(--s-8);
+    }
+    .section-head .eyebrow {
+      margin-bottom: var(--s-3);
+    }
+    .section-head h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-2xl);
+      letter-spacing: -0.022em;
+      line-height: 1;
+    }
+    .section-head h2 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      padding-top: var(--s-2);
+    }
+    .hero .eyebrow {
+      margin-bottom: var(--s-5);
+    }
+    .hero-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-3xl);
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      max-width: 14ch;
+      margin-bottom: var(--s-4);
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-sub {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-size: var(--t-lg);
+      color: var(--ink-soft);
+      line-height: 1.5;
+      max-width: 42ch;
+      font-weight: var(--w-regular);
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-5) var(--s-6);
+      margin-top: var(--s-8);
+      padding-top: var(--s-6);
+      border-top: 1px solid var(--glass-border);
+    }
+    @media (min-width: 641px) {
+      .hero-stats {
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--s-6);
+      }
+    }
+    .hero-stat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .hero-stat strong {
+      display: block;
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-medium);
+      font-style: normal;
+      font-size: var(--t-2xl);
+      color: var(--gold);
+      letter-spacing: -0.025em;
+      line-height: 1;
+      margin-bottom: var(--s-2);
+    }
+
+    /* ============================================================
+       MIREK QUOTE
+       ============================================================ */
+    .quote-frame {
+      padding: var(--s-8) var(--s-5) var(--s-6);
+    }
+    @media (min-width: 641px) {
+      .quote-frame {
+        padding: var(--s-12) var(--s-10) var(--s-10);
+      }
+    }
+    .quote-mark {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 80px;
+      line-height: 0.5;
+      color: var(--gold);
+      opacity: 0.32;
+      margin-bottom: var(--s-4);
+      display: block;
+      letter-spacing: -0.05em;
+    }
+    @media (min-width: 641px) {
+      .quote-mark {
+        font-size: 120px;
+        margin-bottom: var(--s-2);
+      }
+    }
+    .quote-text {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: var(--w-regular);
+      font-size: var(--t-xl);
+      line-height: 1.32;
+      color: var(--ink);
+      max-width: 28ch;
+    }
+    @media (min-width: 641px) {
+      .quote-text {
+        font-size: 30px;
+        max-width: 36ch;
+      }
+    }
+    @media (min-width: 1025px) {
+      .quote-text {
+        font-size: 36px;
+      }
+    }
+    .quote-attr {
+      margin-top: var(--s-5);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--t-xs);
+      color: var(--ink-low);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .quote-attr strong { color: var(--coral); font-weight: var(--w-medium); }
+    .quote-answer {
+      margin-top: var(--s-6);
+      padding-top: var(--s-5);
+      border-top: 1px solid var(--glass-border);
+      font-size: var(--t-base);
+      color: var(--ink-soft);
+      line-height: 1.65;
+      max-width: 56ch;
+    }
+    .quote-answer strong { color: var(--gold); font-weight: var(--w-medium); }
+
+    /* ============================================================
+       WINNER CARD
+       ============================================================ */
+    .winner {
+      border: 1px solid var(--glass-border-hi);
+      background: linear-gradient(180deg, rgba(232, 90, 32, 0.10), var(--glass));
+      box-shadow: 0 32px 96px -32px rgba(232, 90, 32, 0.42);
+    }
+    .winner-ribbon {
+      padding: var(--s-4) var(--s-5);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(232, 90, 32, 0.10);
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+    }
+    @media (min-width: 641px) {
+      .winner-ribbon {
+        padding: var(--s-5) var(--s-8);
+      }
+    }
+    .winner-ribbon-trophy {
+      font-size: 18px;
+    }
+    .winner-ribbon-tier {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--winner);
+      font-weight: var(--w-bold);
+    }
+    .winner-ribbon-prize {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-mid);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      width: 100%;
+    }
+    @media (min-width: 641px) {
+      .winner-ribbon-prize {
+        margin-left: auto;
+        width: auto;
+      }
+    }
+    .winner-hero {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+    @media (min-width: 1025px) {
+      .winner-body {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+      }
+      .winner-hero {
+        aspect-ratio: auto;
+        height: 100%;
+        min-height: 540px;
+      }
+    }
+    .winner-text {
+      padding: var(--s-6) var(--s-5) var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .winner-text {
+        padding: var(--s-10) var(--s-8) var(--s-8);
+      }
+    }
+    @media (min-width: 1025px) {
+      .winner-text {
+        padding: var(--s-12) var(--s-10);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+    }
+    .winner-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-4xl);
+      line-height: 0.95;
+      letter-spacing: -0.028em;
+      margin-bottom: var(--s-2);
+    }
+    .winner-name em {
+      font-style: italic;
+      color: var(--winner);
+    }
+    .winner-loc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-6);
+    }
+    .winner-pullquote {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: var(--w-regular);
+      font-size: var(--t-lg);
+      line-height: 1.4;
+      color: var(--ink);
+      padding-left: var(--s-4);
+      border-left: 2px solid var(--winner);
+      margin-bottom: var(--s-3);
+    }
+    .winner-pullquote-attr {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding-left: var(--s-4);
+      margin-bottom: var(--s-6);
+    }
+    .winner-why {
+      font-size: var(--t-base);
+      color: var(--ink-soft);
+      line-height: 1.65;
+      max-width: 44ch;
+    }
+    .winner-why strong { color: var(--ink); font-weight: var(--w-medium); }
+
+    /* Winner gallery — horizontal scroll on mobile, grid on desktop */
+    .winner-gallery {
+      display: flex;
+      gap: var(--s-2);
+      padding: 0 var(--s-5) var(--s-6);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .winner-gallery::-webkit-scrollbar { display: none; }
+    @media (min-width: 641px) {
+      .winner-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--s-3);
+        padding: 0 var(--s-8) var(--s-8);
+        overflow: visible;
+      }
+    }
+    @media (min-width: 1025px) {
+      .winner-gallery {
+        grid-template-columns: repeat(6, 1fr);
+        padding: 0 var(--s-10) var(--s-10);
+      }
+    }
+    .winner-gallery > * {
+      flex: 0 0 72%;
+      scroll-snap-align: start;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: var(--bg-2);
+    }
+    @media (min-width: 641px) {
+      .winner-gallery > * {
+        flex: initial;
+        aspect-ratio: 1;
+      }
+    }
+    .winner-gallery img,
+    .winner-gallery video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============================================================
+       VOTING — standings card + voter cards horizontal scroll
+       ============================================================ */
+    .standings {
+      padding: var(--s-6) var(--s-5);
+      margin-bottom: var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .standings {
+        padding: var(--s-8) var(--s-8);
+        margin-bottom: var(--s-6);
+      }
+    }
+    .standings-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--coral);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-5);
+    }
+    .standings-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: var(--s-4);
+      padding: var(--s-4) 0;
+      border-top: 1px solid var(--glass-border);
+      position: relative;
+    }
+    .standings-row:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+    .standings-row .standings-bar {
+      grid-column: 1 / -1;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      opacity: 0.55;
+      margin-top: var(--s-2);
+    }
+    .standings-shop {
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: var(--t-base);
+      font-weight: var(--w-medium);
+      color: var(--ink);
+      letter-spacing: 0.005em;
+    }
+    .standings-shop em {
+      font-style: normal;
+      color: var(--gold);
+      font-weight: var(--w-medium);
+    }
+    .standings-pts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--t-xl);
+      font-weight: var(--w-medium);
+      color: var(--gold);
+      line-height: 1;
+    }
+    .standings-row.tied .standings-pts::after {
+      content: 'remis';
+      display: block;
+      font-size: 9px;
+      color: var(--coral);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: var(--w-medium);
+      margin-top: 4px;
+    }
+
+    /* Voter cards — horizontal scroll on mobile, grid on tablet+ */
+    .voters {
+      display: flex;
+      gap: var(--s-3);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin: 0 calc(-1 * var(--page-pad-x));
+      padding: 0 var(--page-pad-x) var(--s-3);
+    }
+    .voters::-webkit-scrollbar { display: none; }
+    @media (min-width: 641px) {
+      .voters {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-4);
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+      }
+    }
+    @media (min-width: 1025px) {
+      .voters {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .voter {
+      flex: 0 0 78%;
+      scroll-snap-align: start;
+      padding: var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .voter {
+        flex: initial;
+      }
+    }
+    .voter-name {
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: var(--t-sm);
+      font-weight: var(--w-bold);
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-4);
+      padding-bottom: var(--s-3);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .voter-picks {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+    .pick {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-2) 0;
+    }
+    .pick-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: var(--r-sm);
+      background: rgba(255, 176, 112, 0.12);
+      color: var(--gold);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: var(--w-bold);
+    }
+    .pick-rank.r1 {
+      background: rgba(232, 90, 32, 0.22);
+      color: var(--winner);
+    }
+    .pick-shop {
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: var(--t-sm);
+      color: var(--ink);
+      font-weight: var(--w-regular);
+    }
+    .pick-pts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.06em;
+    }
+
+    .scroll-hint {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: var(--s-3);
+    }
+    .scroll-hint::before {
+      content: '⇆';
+      color: var(--coral);
+      font-size: 14px;
+    }
+    @media (min-width: 641px) {
+      .scroll-hint { display: none; }
+    }
+
+    /* ============================================================
+       PODIUM (consolation winners)
+       ============================================================ */
+    .podium {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+      margin-top: var(--s-8);
+    }
+    @media (min-width: 1025px) {
+      .podium {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-6);
+      }
+      .podium > .podium-card.featured {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .podium-card {
+      position: relative;
+      transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .podium-img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+    @media (min-width: 1025px) {
+      .podium-card.featured .podium-body {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+      }
+      .podium-card.featured .podium-img {
+        aspect-ratio: auto;
+        height: 100%;
+        min-height: 360px;
+      }
+    }
+    .podium-text {
+      padding: var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .podium-text {
+        padding: var(--s-8);
+      }
+    }
+    .podium-tier {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--s-2);
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+    .podium-tier .pts {
+      color: var(--ink-low);
+    }
+    .podium-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-2xl);
+      line-height: 1;
+      letter-spacing: -0.022em;
+      margin-bottom: var(--s-3);
+    }
+    .podium-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .podium-blurb {
+      font-size: var(--t-sm);
+      color: var(--ink-soft);
+      line-height: 1.65;
+      max-width: 48ch;
+    }
+    .podium-meta {
+      margin-top: var(--s-5);
+      padding-top: var(--s-3);
+      border-top: 1px solid var(--glass-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--ink-low);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       TIE BREAKER
+       ============================================================ */
+    .tie-banner {
+      padding: var(--s-4) var(--s-5);
+      margin-top: var(--s-2);
+      margin-bottom: 0;
+      border-radius: var(--r);
+      background: linear-gradient(180deg, rgba(255, 122, 64, 0.14), rgba(255, 122, 64, 0.04));
+      border: 1px solid rgba(255, 122, 64, 0.32);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+      text-align: center;
+    }
+    .tie-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--coral);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 122, 64, 0.16);
+      font-weight: var(--w-medium);
+      white-space: nowrap;
+    }
+    .tie-text {
+      font-size: var(--t-sm);
+      color: var(--ink);
+      font-weight: var(--w-regular);
+    }
+    .tie-text strong {
+      color: var(--gold);
+      font-weight: var(--w-medium);
+    }
+    @media (min-width: 1025px) {
+      .tie-banner {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .podium-card.tied {
+      cursor: pointer;
+      min-height: var(--touch-min);
+    }
+    .podium-card.tied .tie-action {
+      position: absolute;
+      top: var(--s-3);
+      right: var(--s-3);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 10px var(--s-4);
+      border-radius: 999px;
+      background: rgba(15, 10, 8, 0.85);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border-hi);
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: var(--t-xs);
+      font-weight: var(--w-medium);
+      color: var(--ink);
+      z-index: 5;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      min-height: 36px;
+    }
+    .podium-card.tied .tie-action::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 8px var(--coral);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .podium-card.tied:active {
+      transform: scale(0.99);
+    }
+    .podium-card.selected {
+      border: 1px solid var(--winner);
+      box-shadow:
+        0 0 0 2px rgba(232, 90, 32, 0.32),
+        0 24px 64px -16px rgba(232, 90, 32, 0.50);
+    }
+    .podium-card.selected .tie-action {
+      background: var(--winner);
+      border-color: var(--winner);
+      color: #fff;
+    }
+    .podium-card.selected .tie-action::before {
+      background: #fff;
+      box-shadow: 0 0 8px #fff;
+    }
+    .podium-card.selected .tie-action span { display: none; }
+    .podium-card.selected .tie-action::after {
+      content: '✓ Wybrane';
+    }
+    .podium-card.dimmed {
+      opacity: 0.42;
+      filter: saturate(0.7);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    /* ============================================================
+       OTHER ENTRIES
+       ============================================================ */
+    .others {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+    @media (min-width: 1025px) {
+      .others {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-6);
+      }
+      .others > .other-card.featured {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .other-card {
+      overflow: hidden;
+    }
+    .other-img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+    .other-video {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: var(--bg-2);
+      object-fit: cover;
+    }
+    .other-img-wrap {
+      position: relative;
+    }
+    .video-badge {
+      position: absolute;
+      top: var(--s-3);
+      right: var(--s-3);
+      background: rgba(15, 10, 8, 0.82);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      color: var(--coral);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid var(--glass-border-hi);
+    }
+    .other-text {
+      padding: var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .other-text {
+        padding: var(--s-6);
+      }
+    }
+    .other-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-xl);
+      line-height: 1.1;
+      letter-spacing: -0.018em;
+      margin-bottom: var(--s-2);
+    }
+    .other-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .other-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--ink-low);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-3);
+    }
+    .other-blurb {
+      font-size: var(--t-sm);
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+    .other-blurb em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    /* Sami Swoi Southampton — horizontal scroll gallery */
+    .ss-gallery {
+      display: flex;
+      gap: var(--s-2);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0;
+    }
+    .ss-gallery::-webkit-scrollbar { display: none; }
+    .ss-gallery > * {
+      flex: 0 0 88%;
+      scroll-snap-align: start;
+      aspect-ratio: 4 / 3;
+    }
+    .ss-gallery img,
+    .ss-gallery video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: var(--bg-2);
+    }
+    @media (min-width: 1025px) {
+      .other-card.featured .other-body {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+      }
+      .ss-gallery {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: var(--s-1);
+        overflow: visible;
+        height: 100%;
+      }
+      .ss-gallery > * {
+        flex: initial;
+        aspect-ratio: auto;
+        min-height: 0;
+        min-width: 0;
+      }
+      .ss-gallery > :first-child {
+        grid-row: 1 / 3;
+      }
+    }
+
+    /* ============================================================
+       CHATKA — AI ANALYSIS (mobile-first compare slider)
+       ============================================================ */
+    @media (min-width: 1025px) {
+      .others > .chatka-card {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .chatka-header {
+      padding: var(--s-6) var(--s-5) var(--s-5);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    @media (min-width: 641px) {
+      .chatka-header {
+        padding: var(--s-8);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: var(--s-6);
+      }
+    }
+    .chatka-header-left .chatka-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-2xl);
+      letter-spacing: -0.022em;
+      margin-bottom: var(--s-2);
+    }
+    .chatka-name em { font-style: italic; color: var(--gold); }
+    .chatka-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .chatka-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 10px var(--s-4);
+      border-radius: 999px;
+      background: rgba(232, 90, 32, 0.14);
+      border: 1px solid rgba(232, 90, 32, 0.36);
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: var(--t-xs);
+      font-weight: var(--w-medium);
+      color: var(--coral);
+      margin-top: var(--s-4);
+      min-height: 36px;
+    }
+    @media (min-width: 641px) {
+      .chatka-flag {
+        margin-top: 0;
+      }
+    }
+    .chatka-flag::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 8px var(--coral);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    /* Compare slider — works on touch */
+    .chatka-compare {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: var(--bg-2);
+      cursor: ew-resize;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y;
+    }
+    @media (min-width: 641px) {
+      .chatka-compare {
+        aspect-ratio: 16 / 10;
+      }
+    }
+    @media (min-width: 1025px) {
+      .chatka-compare {
+        aspect-ratio: 21 / 9;
+      }
+    }
+    .chatka-compare img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .chatka-compare-front {
+      clip-path: inset(0 50% 0 0);
+      will-change: clip-path;
+    }
+    .chatka-compare-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 16px rgba(15, 10, 8, 0.6);
+      transform: translateX(-50%);
+      pointer-events: none;
+      will-change: left;
+    }
+    .chatka-compare-handle::after {
+      content: '⇆';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(15, 10, 8, 0.85);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border-hi);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .chatka-compare-label {
+      position: absolute;
+      top: var(--s-3);
+      padding: 6px var(--s-3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      background: rgba(15, 10, 8, 0.85);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border-hi);
+      pointer-events: none;
+    }
+    .chatka-compare-label.warn {
+      left: var(--s-3);
+      color: var(--coral);
+      border-color: rgba(232, 90, 32, 0.45);
+    }
+    .chatka-compare-label.ok {
+      right: var(--s-3);
+      color: var(--ink-soft);
+    }
+
+    .chatka-compare-hint {
+      padding: var(--s-3) var(--s-5);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--coral);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: center;
+      background: rgba(232, 90, 32, 0.06);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .chatka-compare-hint::before {
+      content: '⇆ ';
+    }
+
+    .chatka-analysis {
+      padding: var(--s-6) var(--s-5) var(--s-8);
+      background: rgba(15, 10, 8, 0.42);
+    }
+    @media (min-width: 641px) {
+      .chatka-analysis {
+        padding: var(--s-10) var(--s-8) var(--s-10);
+      }
+    }
+    .chatka-blurb {
+      font-size: var(--t-base);
+      color: var(--ink-soft);
+      line-height: 1.65;
+      max-width: 64ch;
+      margin-bottom: var(--s-6);
+    }
+    .analysis-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--coral);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-3);
+    }
+    .analysis-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: var(--w-regular);
+      font-size: var(--t-xl);
+      line-height: 1.32;
+      margin-bottom: var(--s-6);
+      color: var(--ink);
+      max-width: 38ch;
+    }
+
+    /* Analysis as accordion on mobile, list on desktop */
+    .analysis-list {
+      list-style: none;
+      counter-reset: marker;
+    }
+    .analysis-list li {
+      counter-increment: marker;
+      border-top: 1px solid var(--glass-border);
+    }
+    .analysis-list li:first-child {
+      border-top: none;
+    }
+    .analysis-list summary {
+      list-style: none;
+      cursor: pointer;
+      padding: var(--s-4) 0 var(--s-4) var(--s-10);
+      position: relative;
+      font-family: 'Geist', system-ui, sans-serif;
+      font-weight: var(--w-medium);
+      font-size: var(--t-base);
+      color: var(--ink);
+      min-height: var(--touch-min);
+      display: flex;
+      align-items: center;
+    }
+    .analysis-list summary::-webkit-details-marker { display: none; }
+    .analysis-list summary::before {
+      content: counter(marker, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--t-xs);
+      color: var(--coral);
+      font-weight: var(--w-medium);
+    }
+    .analysis-list summary::after {
+      content: '+';
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      color: var(--coral);
+      transition: transform 0.3s ease;
+      width: 24px;
+      text-align: center;
+    }
+    .analysis-list details[open] summary::after {
+      content: '−';
+    }
+    .analysis-list .analysis-body {
+      padding: 0 0 var(--s-5) var(--s-10);
+      font-size: var(--t-sm);
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    @media (min-width: 1025px) {
+      .analysis-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0 var(--s-10);
+      }
+      .analysis-list li {
+        border-top: 1px solid var(--glass-border);
+      }
+      .analysis-list li:nth-child(1),
+      .analysis-list li:nth-child(2) {
+        border-top: none;
+      }
+    }
+
+    .analysis-verdict {
+      margin-top: var(--s-6);
+      padding: var(--s-4) var(--s-5);
+      border-radius: var(--r);
+      background: rgba(232, 90, 32, 0.10);
+      border: 1px solid rgba(232, 90, 32, 0.32);
+      font-size: var(--t-sm);
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+    @media (min-width: 641px) {
+      .analysis-verdict {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--s-3);
+      }
+    }
+    .analysis-verdict-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--coral);
+      font-weight: var(--w-medium);
+    }
+    @media (min-width: 641px) {
+      .analysis-verdict-label {
+        padding-right: var(--s-3);
+        border-right: 1px solid rgba(232, 90, 32, 0.32);
+      }
+    }
+    .analysis-verdict strong {
+      color: var(--gold);
+      font-weight: var(--w-medium);
+    }
+
+    /* ============================================================
+       PRIZES
+       ============================================================ */
+    .prizes {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+    @media (min-width: 641px) {
+      .prizes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--s-4);
+      }
+    }
+    .prize-card {
+      padding: var(--s-6) var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .prize-card {
+        padding: var(--s-8);
+      }
+    }
+    .prize-card.main {
+      border-color: rgba(232, 90, 32, 0.36);
+      background: linear-gradient(180deg, rgba(232, 90, 32, 0.10), var(--glass));
+    }
+    .prize-icon {
+      font-size: 24px;
+      margin-bottom: var(--s-4);
+    }
+    .prize-tier {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: var(--s-2);
+    }
+    .prize-card.main .prize-tier { color: var(--winner); }
+    .prize-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-xl);
+      letter-spacing: -0.018em;
+      line-height: 1.1;
+      margin-bottom: var(--s-3);
+    }
+    .prize-name em { font-style: italic; color: var(--gold); }
+    .prize-card.main .prize-name em { color: var(--winner); }
+    .prize-desc {
+      font-size: var(--t-sm);
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+    .prize-desc strong { color: var(--ink); font-weight: var(--w-medium); }
+    .prize-desc em { font-style: italic; color: var(--gold); }
+    .prize-count {
+      margin-top: var(--s-4);
+      padding-top: var(--s-3);
+      border-top: 1px solid var(--glass-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    /* ============================================================
+       HOW IT WAS MADE
+       ============================================================ */
+    .made {
+      padding: var(--s-8) var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .made {
+        padding: var(--s-12) var(--s-10);
+      }
+    }
+    @media (min-width: 1025px) {
+      .made {
+        padding: var(--s-16) var(--s-12);
+      }
+      .made-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: var(--s-12);
+      }
+    }
+    .made-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--coral);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-4);
+    }
+    .made-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-regular);
+      font-size: var(--t-2xl);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--s-5);
+    }
+    .made-title em { font-style: italic; color: var(--gold); }
+    .made-body {
+      font-size: var(--t-base);
+      color: var(--ink-soft);
+      line-height: 1.7;
+      max-width: 56ch;
+    }
+    .made-body strong { color: var(--ink); font-weight: var(--w-medium); }
+    .made-body em { font-style: italic; color: var(--gold); }
+    .made-body p + p { margin-top: var(--s-4); }
+
+    .made-stats {
+      margin-top: var(--s-8);
+      padding-top: var(--s-6);
+      border-top: 1px solid var(--glass-border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-5);
+    }
+    @media (min-width: 641px) {
+      .made-stats {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+    @media (min-width: 1025px) {
+      .made-stats {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+        padding-left: var(--s-10);
+        border-left: 1px solid var(--glass-border);
+        grid-template-columns: 1fr;
+      }
+    }
+    .made-stat-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: var(--w-medium);
+      font-style: normal;
+      font-size: var(--t-3xl);
+      color: var(--gold);
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+    .made-stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: var(--s-2);
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .footer {
+      margin-top: var(--s-16);
+      padding: var(--s-6) 0 0;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+    @media (min-width: 641px) {
+      .footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    .footer-left {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-low);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .footer-right {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-size: var(--t-sm);
+      color: var(--ink-soft);
+    }
+
+    /* ============================================================
+       SOL ORB + SCROLL TOP
+       ============================================================ */
+    .sol-orb {
+      position: fixed;
+      bottom: var(--s-4);
+      right: var(--s-4);
+      bottom: max(var(--s-4), env(safe-area-inset-bottom));
+      right: max(var(--s-4), env(safe-area-inset-right));
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 32% 30%,
+        #ffe0b8 0%,
+        #ffb070 22%,
+        #ff7a40 48%,
+        #b83a10 78%,
+        #4a1808 100%
+      );
+      box-shadow:
+        0 0 28px rgba(255, 157, 92, 0.55),
+        0 0 64px rgba(232, 90, 32, 0.32),
+        inset 2px 2px 4px rgba(255, 224, 184, 0.6),
+        inset -2px -2px 6px rgba(74, 24, 8, 0.5);
+      animation: orbBreathe 6s ease-in-out infinite;
+      z-index: 100;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      border: none;
+    }
+    @media (min-width: 641px) {
+      .sol-orb {
+        width: 52px;
+        height: 52px;
+        bottom: var(--s-6);
+        right: var(--s-6);
+      }
+    }
+    .sol-orb:hover { transform: scale(1.08); }
+    .sol-orb:active { transform: scale(0.96); }
+    .sol-orb-tooltip {
+      position: fixed;
+      bottom: max(70px, calc(env(safe-area-inset-bottom) + 70px));
+      right: var(--s-4);
+      max-width: 220px;
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-size: var(--t-xs);
+      color: var(--ink);
+      background: var(--glass-hi);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      padding: var(--s-3) var(--s-4);
+      border-radius: var(--r);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 99;
+      text-align: right;
+      line-height: 1.4;
+    }
+    .sol-orb:hover + .sol-orb-tooltip,
+    .sol-orb:focus + .sol-orb-tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes orbBreathe {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.06);
+      }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    section {
+      animation: fadeUp 0.7s ease-out both;
+    }
+    section:nth-of-type(1) { animation-delay: 0s; }
+    section:nth-of-type(2) { animation-delay: 0.08s; }
+    section:nth-of-type(3) { animation-delay: 0.14s; }
+    section:nth-of-type(4) { animation-delay: 0.20s; }
+    section:nth-of-type(5) { animation-delay: 0.26s; }
+    section:nth-of-type(6) { animation-delay: 0.32s; }
+    section:nth-of-type(7) { animation-delay: 0.38s; }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- ====================== HERO ====================== -->
+    <section class="hero">
+      <span class="eyebrow">Konkurs Wielkanocny · 2026</span>
+      <h1 class="display hero-title">
+        Stół Wielkanocny<br />
+        <em>w naszych sklepach</em>
+      </h1>
+      <p class="hero-sub">
+        Dziesięć sklepów. Dwa tygodnie. Sto dziewięć zdjęć i trzy filmy.
+        Pierwsza taka inicjatywa Domowej Spiżarni — i jak się okazało, nie ostatnia.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>10</strong>sklepów</div>
+        <div class="hero-stat"><strong>109</strong>zdjęć</div>
+        <div class="hero-stat"><strong>3</strong>filmy</div>
+        <div class="hero-stat"><strong>4</strong>jurorów</div>
+        <div class="hero-stat"><strong>29.03→06.04</strong>okno</div>
+      </div>
+    </section>
+
+    <!-- ====================== MIREK QUOTE ====================== -->
+    <section>
+      <article class="glass quote-frame">
+        <span class="quote-mark">"</span>
+        <p class="quote-text">
+          Da się podpiąć jakiś silnik AI do tego wątku, żeby nam to dla nas posortował?
+        </p>
+        <div class="quote-attr">
+          <strong>Mirek</strong> · zebranie zespołu, 8 kwietnia 2026
+        </div>
+        <p class="quote-answer">
+          Tak. To, co widzisz poniżej, to odpowiedź. AI przeczytało <strong>całą rozmowę z WhatsAppa</strong>,
+          rozpoznało dziesięć zgłoszeń, przyporządkowało zdjęcia i filmy do właściwych sklepów,
+          policzyło głosy jury, wykryło zdjęcie podejrzane o edycję AI, a potem zaprojektowało i napisało tę stronę
+          od zera. Wszystko z jednej krótkiej rozmowy.
+        </p>
+      </article>
+    </section>
+
+    <!-- ====================== WINNER ====================== -->
+    <section>
+      <header class="section-head">
+        <span class="eyebrow">Zwycięzca · jednogłośnie</span>
+        <h2 class="display">Mega <em>Deals</em></h2>
+      </header>
+
+      <article class="glass winner">
+        <div class="winner-ribbon">
+          <span class="winner-ribbon-trophy">🏆</span>
+          <span class="winner-ribbon-tier">Pierwsze miejsce</span>
+          <span class="winner-ribbon-prize">Pełny kosz nagród · Decyzja jednogłośna</span>
+        </div>
+
+        <div class="winner-body">
+          <img src="media/megadeals-1.jpg" alt="Mega Deals — pełna wystawa wielkanocna" class="winner-hero" />
+          <div class="winner-text">
+            <h3 class="winner-name">Mega <em>Deals</em></h3>
+            <div class="winner-loc">Renia · 9 kwietnia 2026</div>
+
+            <p class="winner-pullquote">
+              Hej Mirus, tak skupiłam się na efekcie waszej firmy, że całkiem zapomniałam o akcencie wielkanocnym.
+            </p>
+            <div class="winner-pullquote-attr">— Renia, Mega Deals</div>
+
+            <p class="winner-why">
+              Mega Deals zbudowali pełną <strong>scenografię marki</strong> — bliźniacze panele
+              "Stół Wielkanocny z Domową Spiżarnią", drewniany stojak na kabanosy, piętrowe
+              kosze z wędlinami, deski degustacyjne, świeże zioła. Skala, symetria i myślenie kuratorskie
+              postawiły to zgłoszenie o jedno piętro wyżej niż wszystkie pozostałe.
+            </p>
+          </div>
+        </div>
+
+        <div class="winner-gallery">
+          <div><img src="media/megadeals-2.jpg" alt="Mega Deals — branding" loading="lazy" /></div>
+          <div><img src="media/megadeals-3.jpg" alt="Mega Deals — degustacja" loading="lazy" /></div>
+          <div><img src="media/megadeals-4.jpg" alt="Mega Deals — wędliny" loading="lazy" /></div>
+          <div><img src="media/megadeals-5.jpg" alt="Mega Deals — stół degustacyjny" loading="lazy" /></div>
+          <div><img src="media/megadeals-6.jpg" alt="Mega Deals — zespół" loading="lazy" /></div>
+          <div><video src="media/megadeals.mp4" controls preload="metadata" muted playsinline webkit-playsinline></video></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================== VOTING ====================== -->
+    <section>
+      <header class="section-head">
+        <span class="eyebrow">Jury · 4 głosy</span>
+        <h2 class="display">Wyniki <em>głosowania</em></h2>
+      </header>
+
+      <!-- Standings -->
+      <div class="glass standings">
+        <div class="standings-title">Klasyfikacja końcowa · 3-2-1 punktów</div>
+
+        <div class="standings-row">
+          <div class="standings-shop">Wiejska <em>Norbury</em></div>
+          <div class="standings-pts">9</div>
+          <div class="standings-bar" style="width: 100%"></div>
+        </div>
+        <div class="standings-row">
+          <div class="standings-shop">Kopernik <em>Heston</em></div>
+          <div class="standings-pts">5</div>
+          <div class="standings-bar" style="width: 56%"></div>
+        </div>
+        <div class="standings-row tied">
+          <div class="standings-shop">Kopernik Eastmead</div>
+          <div class="standings-pts">4</div>
+          <div class="standings-bar" style="width: 44%"></div>
+        </div>
+        <div class="standings-row tied">
+          <div class="standings-shop">Maja Greenford</div>
+          <div class="standings-pts">4</div>
+          <div class="standings-bar" style="width: 44%"></div>
+        </div>
+        <div class="standings-row">
+          <div class="standings-shop">Chatka Franka</div>
+          <div class="standings-pts">2</div>
+          <div class="standings-bar" style="width: 22%"></div>
+        </div>
+      </div>
+
+      <!-- Voter cards (horizontal scroll on mobile) -->
+      <div class="voters">
+        <article class="glass voter">
+          <div class="voter-name">Krys</div>
+          <div class="voter-picks">
+            <div class="pick"><span class="pick-rank r1">1</span><span class="pick-shop">Kopernik Heston</span><span class="pick-pts">+3</span></div>
+            <div class="pick"><span class="pick-rank">2</span><span class="pick-shop">Wiejska Norbury</span><span class="pick-pts">+2</span></div>
+            <div class="pick"><span class="pick-rank">3</span><span class="pick-shop">Kopernik Eastmead</span><span class="pick-pts">+1</span></div>
+          </div>
+        </article>
+
+        <article class="glass voter">
+          <div class="voter-name">Kuba</div>
+          <div class="voter-picks">
+            <div class="pick"><span class="pick-rank r1">1</span><span class="pick-shop">Maja Greenford</span><span class="pick-pts">+3</span></div>
+            <div class="pick"><span class="pick-rank">2</span><span class="pick-shop">Kopernik Heston</span><span class="pick-pts">+2</span></div>
+            <div class="pick"><span class="pick-rank">3</span><span class="pick-shop">Wiejska Norbury</span><span class="pick-pts">+1</span></div>
+          </div>
+        </article>
+
+        <article class="glass voter">
+          <div class="voter-name">Mirek</div>
+          <div class="voter-picks">
+            <div class="pick"><span class="pick-rank r1">1</span><span class="pick-shop">Wiejska Norbury</span><span class="pick-pts">+3</span></div>
+            <div class="pick"><span class="pick-rank">2</span><span class="pick-shop">Chatka Franka</span><span class="pick-pts">+2</span></div>
+            <div class="pick"><span class="pick-rank">3</span><span class="pick-shop">Kopernik Eastmead</span><span class="pick-pts">+1</span></div>
+          </div>
+        </article>
+
+        <article class="glass voter">
+          <div class="voter-name">Kas</div>
+          <div class="voter-picks">
+            <div class="pick"><span class="pick-rank r1">1</span><span class="pick-shop">Wiejska Norbury</span><span class="pick-pts">+3</span></div>
+            <div class="pick"><span class="pick-rank">2</span><span class="pick-shop">Kopernik Eastmead</span><span class="pick-pts">+2</span></div>
+            <div class="pick"><span class="pick-rank">3</span><span class="pick-shop">Maja Greenford</span><span class="pick-pts">+1</span></div>
+          </div>
+        </article>
+      </div>
+      <div class="scroll-hint">Przesuń, aby zobaczyć karty głosowania</div>
+
+      <!-- Podium -->
+      <div class="podium">
+        <article class="glass podium-card featured">
+          <div class="podium-body">
+            <img src="media/wiejska-2.jpg" alt="Wiejska Norbury" class="podium-img" loading="lazy" />
+            <div class="podium-text">
+              <div class="podium-tier">Pierwsze wyróżnienie <span class="pts">· 9 punktów</span></div>
+              <h3 class="podium-name">Wiejska <em>Norbury</em></h3>
+              <p class="podium-blurb">
+                Najbardziej kreatywne, najbardziej art-directed zgłoszenie w całym konkursie. Rustykalne drewniane
+                stoisko z zawieszonymi kabanosami, girlandami zieleni, paschalnym barankiem,
+                koszami z pisankami i bochenkami chleba na koronkowym obrusie.
+              </p>
+              <div class="podium-meta">2 zdjęcia · 8 kwietnia · jednomyślny lider rankingu</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass podium-card featured">
+          <div class="podium-body">
+            <img src="media/heston-1.jpg" alt="Kopernik Heston" class="podium-img" loading="lazy" />
+            <div class="podium-text">
+              <div class="podium-tier">Drugie wyróżnienie <span class="pts">· 5 punktów</span></div>
+              <h3 class="podium-name">Kopernik <em>Heston</em></h3>
+              <p class="podium-blurb">
+                Pierwsze zgłoszenie w konkursie — i to ono nadało ton wszystkim pozostałym. Tradycyjny,
+                schludny układ na czystej ladzie: wiklinowy kosz z wędlinami i pasztetami wokół figurki zajączka,
+                obramowany kolorowymi pisankami i kłosami zboża.
+              </p>
+              <div class="podium-meta">5 zdjęć · 29 marca · pierwsi na linii startu</div>
+            </div>
+          </div>
+        </article>
+
+        <div class="tie-banner">
+          <span class="tie-pill">Remis · 4 pkt</span>
+          <span class="tie-text">Trzecie wyróżnienie — <strong>Julek wybiera na żywo</strong></span>
+        </div>
+
+        <article class="glass podium-card tied" data-shop="eastmead">
+          <span class="tie-action"><span>Wybierz</span></span>
+          <img src="media/eastmead-1.jpg" alt="Kopernik Eastmead" class="podium-img" loading="lazy" />
+          <div class="podium-text">
+            <div class="podium-tier">Trzecie wyróżnienie · remis <span class="pts">· 4 pkt</span></div>
+            <h3 class="podium-name">Kopernik <em>Eastmead</em></h3>
+            <p class="podium-blurb">
+              Eleganckie, dobrze zaopatrzone stoisko: wiklinowy kosz przepełniony szynkami, kiełbasą,
+              czosnkiem i raffią, obok markowa półka Płatek Przetwórstwo Mięsne z subtelnymi
+              wielkanocnymi akcentami.
+            </p>
+            <div class="podium-meta">8 zdjęć · 4 kwietnia</div>
+          </div>
+        </article>
+
+        <article class="glass podium-card tied" data-shop="maja">
+          <span class="tie-action"><span>Wybierz</span></span>
+          <img src="media/maja-1.jpg" alt="Maja Greenford" class="podium-img" loading="lazy" />
+          <div class="podium-text">
+            <div class="podium-tier">Trzecie wyróżnienie · remis <span class="pts">· 4 pkt</span></div>
+            <h3 class="podium-name">Maja <em>Greenford</em></h3>
+            <p class="podium-blurb">
+              Pełna wielkanocna scenografia: ubrane zajączki, omszały szarak, różowy koszyk z pastelowymi
+              pisankami, gniazdo babeczkowe, bazie i ręcznie pisane polskie etykiety. Czyste opowiadanie historii
+              pod banerem "Stół Wielkanocny z Domową Spiżarnią".
+            </p>
+            <div class="podium-meta">6 zdjęć · 4 kwietnia</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ====================== OTHERS ====================== -->
+    <section>
+      <header class="section-head">
+        <span class="eyebrow">Pozostałe zgłoszenia</span>
+        <h2 class="display">Reszta <em>peletonu</em></h2>
+      </header>
+
+      <div class="others">
+        <!-- Sami Swoi Southampton -->
+        <article class="glass other-card featured">
+          <div class="other-body">
+            <div class="ss-gallery">
+              <div><img src="media/southampton-1.jpg" alt="Sami Swoi Southampton — zespół" loading="lazy" /></div>
+              <div><img src="media/southampton-2.jpg" alt="" loading="lazy" /></div>
+              <div><img src="media/southampton-3.jpg" alt="" loading="lazy" /></div>
+              <div><img src="media/southampton-4.jpg" alt="" loading="lazy" /></div>
+              <div><img src="media/southampton-5.jpg" alt="" loading="lazy" /></div>
+              <div><img src="media/southampton-6.jpg" alt="" loading="lazy" /></div>
+              <div><video src="media/southampton.mp4" controls preload="metadata" playsinline webkit-playsinline></video></div>
+            </div>
+            <div class="other-text">
+              <h3 class="other-name">Sami Swoi <em>Southampton</em></h3>
+              <div class="other-meta">21 zdjęć + film · 4 kwietnia</div>
+              <p class="other-blurb">
+                Najliczniejsze zgłoszenie spoza Mega Deals. Bogata lada wędliniarska z bazami niemal sięgającymi sufitu,
+                jaskrawe akcenty wielkanocne, plakat <em>"Stół Wielkanocny z Domową Spiżarnią"</em> w tle. Dyrektor sklepu
+                dumnie zaprezentowała ekspozycję na zdjęciu zespołowym.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Sami Swoi Bournemouth -->
+        <article class="glass other-card">
+          <div class="other-img-wrap">
+            <video src="media/bournemouth.mp4" controls preload="metadata" playsinline webkit-playsinline class="other-video"></video>
+            <span class="video-badge">Tylko film</span>
+          </div>
+          <div class="other-text">
+            <h3 class="other-name">Sami Swoi <em>Bournemouth</em></h3>
+            <div class="other-meta">1 film · 4 kwietnia</div>
+            <p class="other-blurb">
+              Zgłoszenie wyłącznie w formie filmu — i takie, które rozbawiło cały zespół na zebraniu.
+              <em>"Pękałem ze śmiechu, jak to zobaczyłem"</em> — komentarz Kuby z protokołu spotkania.
+            </p>
+          </div>
+        </article>
+
+        <!-- Deli Polonia -->
+        <article class="glass other-card">
+          <div class="other-img-wrap">
+            <img src="media/deli-1.jpg" alt="Deli Polonia" class="other-img" loading="lazy" />
+          </div>
+          <div class="other-text">
+            <h3 class="other-name">Deli <em>Polonia</em></h3>
+            <div class="other-meta">4 zdjęcia · 7 kwietnia</div>
+            <p class="other-blurb">
+              Profesjonalna energia sklepowej alei: długa zakrzywiona lada uginająca się pod pieczonymi i wędzonymi
+              mięsami, oświetlenie sceniczne, pastelowe pisanki na froncie. <em>"Tak powinno wyglądać każde stoisko"</em>
+              — zanotowane na zebraniu.
+            </p>
+          </div>
+        </article>
+
+        <!-- Adaś -->
+        <article class="glass other-card">
+          <div class="other-img-wrap">
+            <img src="media/adas-1.jpg" alt="Adaś" class="other-img" loading="lazy" />
+          </div>
+          <div class="other-text">
+            <h3 class="other-name"><em>Adaś</em></h3>
+            <div class="other-meta">2 zdjęcia · 2 kwietnia · zgłoszenie e-mailowe</div>
+            <p class="other-blurb">
+              Zwięzłe zgłoszenie skupione na produkcie: ciasna kompozycja krojonych szynek, zwojów kabanosów
+              i wędzonych kiełbas, ozdobiona natką pietruszki i połówkami pomidora. Zgłoszenie pierwotnie
+              przyszło mailem, dołączone do wątku przez Kubę.
+            </p>
+          </div>
+        </article>
+
+        <!-- Chatka Franka — AI compare slider -->
+        <article class="glass other-card chatka-card">
+          <header class="chatka-header">
+            <div class="chatka-header-left">
+              <h3 class="chatka-name">Chatka <em>Franka</em></h3>
+              <div class="chatka-meta">3 zdjęcia · 1–2 kwietnia · nierozstrzygnięte</div>
+            </div>
+            <span class="chatka-flag">Wymaga przeglądu człowieka</span>
+          </header>
+
+          <div class="chatka-compare-hint">Przeciągnij, aby porównać zdjęcia</div>
+
+          <div class="chatka-compare" id="chatka-compare">
+            <img src="media/chatka-2-real.jpg" alt="Chatka Franka — zdjęcie B, autentyczne ujęcie z telefonu" />
+            <img src="media/chatka-1-suspected-ai.jpg" alt="Chatka Franka — zdjęcie A, podejrzane o edycję AI" class="chatka-compare-front" />
+            <span class="chatka-compare-label warn">A · podejrzane</span>
+            <span class="chatka-compare-label ok">B · referencyjne</span>
+            <div class="chatka-compare-handle"></div>
+          </div>
+
+          <div class="chatka-analysis">
+            <p class="chatka-blurb">
+              Sklep przesłał dwa zdjęcia tej samej wielkanocnej ekspozycji. Jedno z nich wygląda na zwykłe ujęcie
+              z telefonu (B). Drugie (A) nosi cechy charakterystyczne dla obróbki lub generowania
+              przez model AI. Sprawa pozostała nierozstrzygnięta na zebraniu zespołu — poniżej pięć konkretnych wskazówek
+              do rozważenia przed podjęciem decyzji.
+            </p>
+
+            <div class="analysis-eyebrow">Analiza AI · pięć markerów na zdjęciu A</div>
+            <p class="analysis-title">
+              Sygnały, które pojawiają się, gdy obraz został wygenerowany lub mocno zretuszowany przez model AI
+            </p>
+
+            <ol class="analysis-list">
+              <li>
+                <details>
+                  <summary>Granica dłoń–kosz nienaturalna</summary>
+                  <div class="analysis-body">
+                    Palce trzymające kosz wtapiają się w wiklinowy splot bez wyraźnych cieni rozgraniczających.
+                    Nadgarstek znika w zielonym fartuchu w sposób, który nie pasuje do realnej geometrii światła.
+                  </div>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary>Niespójność oświetlenia</summary>
+                  <div class="analysis-body">
+                    Wędliny mają miękkie, równomierne, niemal studyjne światło. Tło ma ciepłe światło wpadające
+                    z okna. Te dwa źródła nie pasują do tego samego ujęcia z telefonu.
+                  </div>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary>Gałązki bazi i bukszpanu wyglądają "namalowane"</summary>
+                  <div class="analysis-body">
+                    Liście nie mają nieregularnych krawędzi ani drobnych mikro-cieni, których można się spodziewać
+                    po telefonie. Niektóre kępki wyglądają jak duplikaty.
+                  </div>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary>Ozdobne jajko zbyt perfekcyjne</summary>
+                  <div class="analysis-body">
+                    Wzór nakrapiany wygląda na wygenerowany, a nie ręcznie malowany. Jego cień na otaczającej
+                    "ściółce" nie pokrywa się z położeniem reszty światła.
+                  </div>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary>Test porównawczy</summary>
+                  <div class="analysis-body">
+                    Zdjęcie B tej samej ekspozycji ma wszystkie cechy autentycznego zdjęcia z telefonu.
+                    Sama różnica między dwoma "tymi samymi" zdjęciami jest najmocniejszą wskazówką —
+                    zwykły fotograf nie zmienia stylu między ujęciami sekundami później.
+                  </div>
+                </details>
+              </li>
+            </ol>
+
+            <div class="analysis-verdict">
+              <span class="analysis-verdict-label">Werdykt AI</span>
+              <span><strong>prawdopodobnie wspomagane AI</strong> · pewność umiarkowana · ostatnie słowo należy do człowieka</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ====================== PRIZES ====================== -->
+    <section>
+      <header class="section-head">
+        <span class="eyebrow">Struktura nagród</span>
+        <h2 class="display">Co <em>dostajesz</em></h2>
+      </header>
+
+      <div class="prizes">
+        <article class="glass prize-card main">
+          <div class="prize-icon">🏆</div>
+          <div class="prize-tier">Zwycięzca · 1 sklep</div>
+          <h3 class="prize-name">Pełny <em>kosz</em> nagród</h3>
+          <p class="prize-desc">
+            Główna nagroda za najwyższy nakład pracy i najpełniejszą wystawę. Decyzja jednogłośna,
+            poza klasyfikacją punktową — Mega Deals dostają wszystko.
+          </p>
+          <div class="prize-count">×1 · Mega Deals</div>
+        </article>
+
+        <article class="glass prize-card">
+          <div class="prize-icon">🎁</div>
+          <div class="prize-tier">Wyróżnienia · 3 sklepy</div>
+          <h3 class="prize-name">Mniejsze <em>kosze</em> pocieszenia</h3>
+          <p class="prize-desc">
+            Trzy wyróżnienia przyznane przez głosowanie 3-2-1 punktów. Wiejska Norbury (1.),
+            Kopernik Heston (2.), oraz <em>remis</em> o trzecie miejsce — Eastmead lub Maja Greenford.
+          </p>
+          <div class="prize-count">×3 · do rozdysponowania</div>
+        </article>
+
+        <article class="glass prize-card">
+          <div class="prize-icon">☕</div>
+          <div class="prize-tier">Wszyscy uczestnicy · 10 sklepów</div>
+          <h3 class="prize-name">Kubek, <em>fartuch</em>, długopisy</h3>
+          <p class="prize-desc">
+            Każdy sklep, który wziął udział, dostaje pamiątkowy zestaw firmowy. Bo zasada jest prosta —
+            <strong>nagradzamy wysiłek, nie jakość klienta</strong>. Każde zgłoszenie się liczy.
+          </p>
+          <div class="prize-count">×10 · cały peleton</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ====================== HOW IT WAS MADE ====================== -->
+    <section>
+      <article class="glass made">
+        <div class="made-grid">
+          <div>
+            <div class="made-eyebrow">Jak powstała ta strona</div>
+            <h2 class="made-title">
+              Mirek zapytał: <em>"da się to ogarnąć przez AI?"</em><br />
+              To jest odpowiedź.
+            </h2>
+            <div class="made-body">
+              <p>
+                Ta strona została wygenerowana przez AI <strong>z jednej rozmowy</strong> z Kasem. AI dostało eksport
+                wątku WhatsApp <em>"Contests"</em>, plik tekstowy z <strong>149 wiadomościami</strong> i folder ze
+                <strong>112 plikami multimedialnymi</strong>.
+              </p>
+              <p>
+                W ciągu kilkudziesięciu minut przeczytało całą historię, rozpoznało 10 oddzielnych zgłoszeń,
+                dopasowało zdjęcia i filmy do właściwych sklepów, przeczytało protokół z zebrania zespołu,
+                policzyło głosy jury, wykryło zdjęcie podejrzane o edycję AI, wybrało po sześć najlepszych zdjęć
+                z zgłoszenia zwycięzcy i Sami Swoi Southampton, przetłumaczyło wszystko na polski,
+                zaprojektowało układ od zera i napisało kod tej strony.
+              </p>
+              <p>
+                <strong>To, co widzisz, to nie szablon</strong>. Każdy element został zaprojektowany pod konkretną treść
+                tego konkretnego konkursu. Następnym razem — barbecue, święta, walentynki — AI zrobi to samo,
+                inaczej.
+              </p>
+            </div>
+          </div>
+
+          <div class="made-stats">
+            <div>
+              <div class="made-stat-num">149</div>
+              <div class="made-stat-label">wiadomości</div>
+            </div>
+            <div>
+              <div class="made-stat-num">112</div>
+              <div class="made-stat-label">plików multi</div>
+            </div>
+            <div>
+              <div class="made-stat-num">10</div>
+              <div class="made-stat-label">sklepów</div>
+            </div>
+            <div>
+              <div class="made-stat-num">4</div>
+              <div class="made-stat-label">głosy</div>
+            </div>
+            <div>
+              <div class="made-stat-num">1</div>
+              <div class="made-stat-label">AI wykryte</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================== FOOTER ====================== -->
+    <footer class="footer">
+      <div class="footer-left">
+        Domowa Spiżarnia · Konkurs Wielkanocny 2026 · 9 kwietnia
+      </div>
+      <div class="footer-right">
+        Zaprojektowane i napisane przez Sol — osobistego asystenta AI Kasa.
+      </div>
+    </footer>
+  </main>
+
+  <button class="sol-orb" aria-label="Sol — osobisty asystent AI Kasa"></button>
+  <div class="sol-orb-tooltip" aria-hidden="true">Stworzone przez Sol — osobistego asystenta AI Kasa</div>
+
+  <script>
+    // ====== TIE BREAKER ======
+    document.querySelectorAll('.podium-card.tied').forEach(card => {
+      card.addEventListener('click', () => {
+        const wasSelected = card.classList.contains('selected');
+        document.querySelectorAll('.podium-card.tied').forEach(c => {
+          c.classList.remove('selected', 'dimmed');
+        });
+        if (!wasSelected) {
+          card.classList.add('selected');
+          document.querySelectorAll('.podium-card.tied').forEach(c => {
+            if (c !== card) c.classList.add('dimmed');
+          });
+        }
+      });
+    });
+
+    // ====== CHATKA COMPARE SLIDER ======
+    (function() {
+      const compare = document.getElementById('chatka-compare');
+      if (!compare) return;
+      const front = compare.querySelector('.chatka-compare-front');
+      const handle = compare.querySelector('.chatka-compare-handle');
+      let isDragging = false;
+
+      function setPosition(clientX) {
+        const rect = compare.getBoundingClientRect();
+        let pct = ((clientX - rect.left) / rect.width) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+        front.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+        handle.style.left = `${pct}%`;
+      }
+
+      function start(e) {
+        isDragging = true;
+        compare.style.cursor = 'ew-resize';
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        setPosition(x);
+      }
+      function move(e) {
+        if (!isDragging) return;
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        setPosition(x);
+        if (e.cancelable) e.preventDefault();
+      }
+      function end() {
+        isDragging = false;
+      }
+
+      compare.addEventListener('mousedown', start);
+      compare.addEventListener('touchstart', start, { passive: true });
+      window.addEventListener('mousemove', move);
+      window.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('mouseup', end);
+      window.addEventListener('touchend', end);
+      window.addEventListener('touchcancel', end);
+
+      // Click anywhere to jump
+      compare.addEventListener('click', e => {
+        if (!isDragging) setPosition(e.clientX);
+      });
+    })();
+  </script>
+</body>
+</html>
